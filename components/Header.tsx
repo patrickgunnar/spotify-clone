@@ -6,6 +6,11 @@ import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
 import Button from "./Button";
+import useAuthModal from "@/hooks/useAuthModal";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useUser } from "@/hooks/useUser";
+import { FaUserAlt } from "react-icons/fa";
+import { toast } from "react-hot-toast"
 
 
 interface HeaderProps {
@@ -19,9 +24,28 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
     // get router
     const router = useRouter()
+    // auth modal hook
+    const authModal = useAuthModal()
+    // get supabase client
+    const supabaseClient = useSupabaseClient()
+    // get user from useUser hook
+    const { user } = useUser()
 
     // handle logout
-    const handleLogout = () => {}
+    const handleLogout = async () => {
+        // get any errors on sign out
+        const { error } = await supabaseClient.auth.signOut()
+
+        // resert any playing songs - LATER
+
+        // refresh page
+        router.refresh()
+
+        // if error
+        // else logged out with success
+        if(error) toast.error(error.message)
+        else toast.success('logged out')
+    }
 
     // render elements
     return (
@@ -63,22 +87,37 @@ const Header: React.FC<HeaderProps> = ({
                     </button>
                 </div>
                 <div className="flex justify-center items-center gap-x-4">
-                    <>
-                        <div>
-                            <Button className="bg-transparent text-neutral-300 font-medium"
-                                onClick={() => {}}
-                            >
-                                Sign up
-                            </Button>
-                        </div>
-                        <div>
+                    {user ? (
+                        <div className="flex gap-x-4 items-center">
                             <Button className="bg-white px-6 py-2"
-                                onClick={() => {}}
+                                onClick={handleLogout}
                             >
-                                Log in
+                                Logout
+                            </Button>
+                            <Button className="bg-white"
+                                onClick={() => router.push('/account')}
+                            >
+                                <FaUserAlt />
                             </Button>
                         </div>
-                    </>
+                    ) : (
+                        <>
+                            <div>
+                                <Button className="bg-transparent text-neutral-300 font-medium"
+                                    onClick={authModal.onOpen}
+                                >
+                                    Sign up
+                                </Button>
+                            </div>
+                            <div>
+                                <Button className="bg-white px-6 py-2"
+                                    onClick={authModal.onOpen}
+                                >
+                                    Log in
+                                </Button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
             {children}

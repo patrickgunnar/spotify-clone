@@ -115,6 +115,7 @@ export interface Database {
           image_path: string | null
           song_path: string | null
           title: string | null
+          album: string | null
           user_id: string | null
         }
         Insert: {
@@ -124,6 +125,7 @@ export interface Database {
           image_path?: string | null
           song_path?: string | null
           title?: string | null
+          album?: string | null
           user_id?: string | null
         }
         Update: {
@@ -133,6 +135,7 @@ export interface Database {
           image_path?: string | null
           song_path?: string | null
           title?: string | null
+          album?: string | null
           user_id?: string | null
         }
       }

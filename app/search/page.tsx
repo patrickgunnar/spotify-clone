@@ -10,6 +10,8 @@ interface SearchProps {
     }
 }
 
+export const revalidate = 0
+
 // search page
 const Search = async ({ searchParams }: SearchProps) => {
     // search for songs

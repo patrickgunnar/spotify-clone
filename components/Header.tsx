@@ -11,6 +11,7 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import { FaUserAlt } from "react-icons/fa";
 import { toast } from "react-hot-toast"
+import usePlayer from "@/hooks/usePlayer";
 
 
 interface HeaderProps {
@@ -30,13 +31,16 @@ const Header: React.FC<HeaderProps> = ({
     const supabaseClient = useSupabaseClient()
     // get user from useUser hook
     const { user } = useUser()
+    // get player 
+    const player = usePlayer()
 
     // handle logout
     const handleLogout = async () => {
         // get any errors on sign out
         const { error } = await supabaseClient.auth.signOut()
 
-        // resert any playing songs - LATER
+        // resert any playing songs
+        player.reset()
 
         // refresh page
         router.refresh()
